@@ -33,7 +33,7 @@ export default function RpsGame() {
 
   const playRound = (playerLetter: keyof typeof moveMap) => {
     if (gameOver) return;
-    const playerMove = moveMap[playerLetter];
+    const playerMove = moveMap[playerLetter] as Move;
     let computerMove: Move;
     do {
       computerMove = moves[Math.floor(Math.random() * moves.length)] as Move;
