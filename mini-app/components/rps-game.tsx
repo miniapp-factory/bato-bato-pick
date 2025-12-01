@@ -54,19 +54,22 @@ export default function RpsGame() {
     setAnimating(true);
 
     const winner = determineWinner(pMove, cMove);
+    const newPlayerScore = playerScore + (winner === 'player' ? 1 : 0);
+    const newComputerScore = computerScore + (winner === 'computer' ? 1 : 0);
+    setPlayerScore(newPlayerScore);
+    setComputerScore(newComputerScore);
+
     let roundMessage = `${pMove} vs ${cMove}. `;
     if (winner === 'draw') {
       roundMessage += "It's a tie!";
     } else if (winner === 'player') {
       roundMessage += `${pMove} beats ${cMove}!`;
-      setPlayerScore((s) => s + 1);
     } else {
       roundMessage += `${cMove} beats ${pMove}!`;
-      setComputerScore((s) => s + 1);
     }
     setMessage(roundMessage);
 
-    if (playerScore + 1 === 3 || computerScore + 1 === 3) {
+    if (newPlayerScore === 3 || newComputerScore === 3) {
       setGameOver(true);
     } else {
       setRound((r) => r + 1);
