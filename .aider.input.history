@@ -20,3 +20,9 @@
 
 # 2025-12-01 07:21:54.976371
 +can you also put 2 hands that symbolize what choices it is, whether it is rock, paper, or scissors and also it should also have an animation where they perform rock, paper, scissors and at the end of the motion, they pick what they pick whether it is rock, paper, or scissors.
+
+# 2025-12-01 07:43:59.322813
++Fix the score tracking because whenever the either of the player or computer gets score 2 : 2, the computer automatically wins. Make it like if one got 3 scores, they will win.If the player get 3 points first, the player one wins, then if the computer gets 3 points first it will win.
+
+# 2025-12-01 07:43:59.323984
++Fix the score tracking because whenever the either of the player or computer gets score 2 : 2, the computer automatically wins. Make it like if one got 3 scores, they will win.If the player get 3 points first, the player one wins, then if the computer gets 3 points first it will win.
