@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 
 const moves = ['Rock', 'Paper', 'Scissors'] as const;
@@ -11,6 +11,12 @@ const moveMap = {
   S: 'Scissors',
 };
 
+const handEmoji: Record<Move, string> = {
+  Rock: '✊',
+  Paper: '✋',
+  Scissors: '✌️',
+};
+
 export default function RpsGame() {
   const [playerScore, setPlayerScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
@@ -18,6 +24,9 @@ export default function RpsGame() {
   const [lastComputerMove, setLastComputerMove] = useState<Move | null>(null);
   const [message, setMessage] = useState('');
   const [gameOver, setGameOver] = useState(false);
+  const [playerMove, setPlayerMove] = useState<Move | null>(null);
+  const [computerMove, setComputerMove] = useState<Move | null>(null);
+  const [animating, setAnimating] = useState(false);
 
   const determineWinner = (player: Move, computer: Move) => {
     if (player === computer) return 'draw';
@@ -33,22 +42,26 @@ export default function RpsGame() {
 
   const playRound = (playerLetter: keyof typeof moveMap) => {
     if (gameOver) return;
-    const playerMove = moveMap[playerLetter] as Move;
-    let computerMove: Move;
+    const pMove = moveMap[playerLetter] as Move;
+    let cMove: Move;
     do {
-      computerMove = moves[Math.floor(Math.random() * moves.length)] as Move;
-    } while (computerMove === lastComputerMove);
-    setLastComputerMove(computerMove);
+      cMove = moves[Math.floor(Math.random() * moves.length)] as Move;
+    } while (cMove === lastComputerMove);
+    setLastComputerMove(cMove);
 
-    const winner = determineWinner(playerMove, computerMove);
-    let roundMessage = `${playerMove} vs ${computerMove}. `;
+    setPlayerMove(pMove);
+    setComputerMove(cMove);
+    setAnimating(true);
+
+    const winner = determineWinner(pMove, cMove);
+    let roundMessage = `${pMove} vs ${cMove}. `;
     if (winner === 'draw') {
       roundMessage += "It's a tie!";
     } else if (winner === 'player') {
-      roundMessage += `${playerMove} beats ${computerMove}!`;
+      roundMessage += `${pMove} beats ${cMove}!`;
       setPlayerScore((s) => s + 1);
     } else {
-      roundMessage += `${computerMove} beats ${playerMove}!`;
+      roundMessage += `${cMove} beats ${pMove}!`;
       setComputerScore((s) => s + 1);
     }
     setMessage(roundMessage);
@@ -60,6 +73,13 @@ export default function RpsGame() {
     }
   };
 
+  useEffect(() => {
+    if (animating) {
+      const timer = setTimeout(() => setAnimating(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [animating]);
+
   const restart = () => {
     setPlayerScore(0);
     setComputerScore(0);
@@ -67,12 +87,39 @@ export default function RpsGame() {
     setLastComputerMove(null);
     setMessage('');
     setGameOver(false);
+    setPlayerMove(null);
+    setComputerMove(null);
   };
 
   return (
     <div className="flex flex-col items-center gap-4 mt-6">
+      <style jsx>{`
+        @keyframes handMove {
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+          100% { transform: translateY(0); }
+        }
+        .hand {
+          font-size: 4rem;
+          animation: handMove 1s ease-in-out;
+        }
+      `}</style>
       <div className="text-xl font-semibold">
         Round {round} – {playerScore} : {computerScore}
+      </div>
+      <div className="flex gap-8">
+        <div className="flex flex-col items-center">
+          <div className={animating ? 'hand' : ''}>
+            {playerMove ? handEmoji[playerMove] : '🤚'}
+          </div>
+          <span>Player</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <div className={animating ? 'hand' : ''}>
+            {computerMove ? handEmoji[computerMove] : '🤚'}
+          </div>
+          <span>Computer</span>
+        </div>
       </div>
       <div className="flex gap-2">
         <Button onClick={() => playRound('R')}>Rock (R)</Button>
