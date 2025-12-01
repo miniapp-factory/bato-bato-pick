@@ -36,7 +36,7 @@ export default function RpsGame() {
     const playerMove = moveMap[playerLetter];
     let computerMove: Move;
     do {
-      computerMove = moves[Math.floor(Math.random() * moves.length)];
+      computerMove = moves[Math.floor(Math.random() * moves.length)] as Move;
     } while (computerMove === lastComputerMove);
     setLastComputerMove(computerMove);
 
